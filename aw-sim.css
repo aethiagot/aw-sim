@@ -1,0 +1,243 @@
+/*
+    All-Out War K265's simulator
+    Copyright (C) 2022  [BoL] Aethia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    
+    No copyright infringement intended, some text descriptions and 
+    all images belong to the rightful owners.
+*/
+
+* {
+	box-sizing: border-box;
+    /* From: https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting */
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+    -khtml-user-select: none; /* Konqueror HTML */
+    -moz-user-select: none; /* Old versions of Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently supported by Chrome, Edge, Opera and Firefox */
+}
+
+html {
+	background: url('./img/got.png') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+
+.title {
+    position: relative;
+    font-family: 'Marcellus SC', serif;
+    font-size: 50px;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 30px;
+    font-weight: bold;
+    color: #FFCC33;
+}
+
+.subtitle {
+    position: relative;
+    font-family: 'Marcellus SC', serif;
+    font-size: 30px;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #FFCC33;
+}
+
+.subsubtitle {
+    position: relative;
+    font-family: 'Marcellus SC', serif;
+    font-size: 25px;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: #FFCC33;
+}
+
+.panel {
+    position: relative;
+    border-width: 2px;
+    border-style: solid;
+    width: 376px;
+    max-width: 376px;
+    min-width: 376px;
+    padding-bottom: 30px;
+}
+
+.dataM {
+    position: relative;
+    border: 0px solid white;
+    width: 1200px;
+    margin: 0 auto;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    padding: 20px;
+    text-align: center;
+}
+
+.dataC {
+    position: relative;
+    border: 0px solid white;
+    width: 1200px;
+    margin: 0 auto;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: center;
+}
+
+.disabled {
+    filter: grayscale(100%);
+}
+
+.containerMap {
+    position: relative;
+    display: flex;
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.map {
+    max-width: 100%;
+    max-height: 100%;
+    z-index: -10;
+}
+
+.canvas {
+    position: absolute;
+    width: 1200px;
+    height: 1200px;
+    top: 0px;
+    left: 0px;
+}
+
+.item {
+    position: absolute;
+    cursor: pointer;
+}
+
+.banner {
+    position: absolute;
+    width: 42px;
+}
+
+.caravan {
+    width: 22px;
+}
+
+.gate {
+    width: 36px;
+}
+
+.smilitary {
+    width: 18px;
+}
+
+.mmilitary {
+    width: 23px;
+}
+
+.lmilitary {
+    width: 32px;
+}
+
+.fortress {
+    width: 25px;
+}
+
+.depot {
+    width: 23px;
+}
+
+.smerchant {
+    width: 27px;
+}
+
+.mmerchant {
+    width: 34px;
+}
+
+.lmerchant {
+    width: 46px;
+}
+
+.myButton {
+	background: linear-gradient(#ffd966, #e69138);
+    border-radius: 2px;
+    color: white;
+    font-family: 'Marcellus SC', serif;
+    text-align: center;
+    padding-top: 5px;
+    cursor: pointer;
+}
+
+.myButton:hover {
+	background: linear-gradient(#ffd966,#ba5f00);
+}
+
+/* From https://www.w3schools.com/css/css_tooltip.asp */
+.tooltipT { 
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipT .tooltiptextT {
+    visibility: hidden;
+    width: 150px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 4px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    margin-top: -70px;
+    margin-left: 50px;
+}
+
+.tooltipT:hover .tooltiptextT {
+    visibility: visible;
+}
+
+.tooltipM { 
+    position: absolute;
+    display: none;
+    border-bottom: 1px dotted black;
+    top: 800px;
+    left: 500px;
+}
+
+.tooltipM .tooltiptextM {
+    min-width: 200px;
+    white-space: nowrap;
+    background-color: black;
+    color: #fff;
+    text-align: left;
+    padding:6px 10px 6px 10px;
+    border-radius: 6px;
+    position: absolute;
+    z-index: 1;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 12px;
+    margin-top: -70px;
+    margin-left: -50px;
+}

@@ -1,0 +1,241 @@
+<!--
+    All-Out War K265's simulator
+    Copyright (C) 2022  [BoL] Aethia
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+    
+    No copyright infringement intended, some text descriptions and 
+    all images belong to the rightful owners.
+-->
+  
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>All-Out War K265's Simulator</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
+    
+        <link rel="stylesheet" type="text/css" href="aw-sim.css?v=1.25">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Marcellus+SC" rel="stylesheet">
+        
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script type="text/javascript" charset="utf-8" src="aw-sim-villages.js?v=1.0"></script>
+        <script type="text/javascript" charset="utf-8" src="aw-sim.js?v=1.0"></script>
+    </head>
+
+    <body onload="initialize()">
+        <div style="text-align: center; padding-top: 20px; padding-bottom: 40px;">
+            <span class="title">ALL-OUT WAR</span>
+            <br>
+            <span class="subtitle">K265's Simulator</span>
+        </div>
+        <div class="dataM">
+            <span class="subsubtitle">Strategy Board</span>
+            <div id="bResetMap1" class="myButton" style="position: absolute; bottom: 50px; left: 0px; width: 140px; height: 30px;" onclick="resetMap()">Reset</div>
+            <div id="bRandomMap1" class="myButton" style="position: absolute; bottom: 10px; left: 0px; width: 140px; height: 30px;" onclick="randomMap()">Random</div>
+            <div id="bVillagesMap1" class="myButton" style="position: absolute; bottom: 10px; right: 150px; width: 140px; height: 30px;" onclick="toggleMapVillages()">Show Villages</div>
+            <div id="bKingshipMap1" class="myButton" style="position: absolute; bottom: 50px; right: 0px; width: 140px; height: 30px;" onclick="toggleMapKingship()">Show Kingship</div>
+            <div id="bNamesMap1" class="myButton" style="position: absolute; bottom: 10px; right: 0px; width: 140px; height: 30px;" onclick="toggleMapNames()">Hide Names</div>
+            <div style="font-size: 13px; margin-bottom: -10px; margin-top: 5px;">
+                <span style="font-size: 14px; color: white;">Work in progress. I just started it!</span>
+                <br>
+                <span id="warning_villages" style="color: yellow; display: none;">Villages just an in-game screenshot right now :(</span>
+                <br>
+                <span>Mouse over a building to see relevant information such as kingship.</span>
+            </div>
+        </div>
+        <div id="mapSimulator">
+        <div class="containerMap">
+            <img id="map" class="map" src="./img/map/map.jpg">
+            <canvas id="myCanvas" class="canvas" width="1200" height="1200"></canvas>
+            <div id="tContainer" class="tooltipM">
+                <span id="tData" class="tooltiptextM" style="white-space: nowrap; text-align: center;"></span>
+            </div>
+           
+            <!-- BANNERS -->
+            <img id="i0" alt="Twin Dragon City" class="item banner" src="./img/map/0/banner.png" style="top: 569px; left: 569px; width: 62px;" onmouseout="hideTooltip()" onmouseover="showTooltip(0)" onclick="attack(0)">
+            <img id="i1" alt="Shadow Fortress" class="banner" src="./img/map/1/banner.png" style="top: 40px; left: 374px;">
+            <img id="i2" alt="Lordsbane Fort" class="banner" src="./img/map/2/banner.png" style="top: 40px; left: 787px;">
+            <img id="i3" alt="Tempest Keep" class="banner" src="./img/map/3/banner.png" style="top: 360px; left: 50px;">
+            <img id="i4" alt="Hall of Ages" class="banner" src="./img/map/4/banner.png" style="top: 360px; left: 1111px;">
+            <img id="i5" alt="Scarlet Palace" class="banner" src="./img/map/5/banner.png" style="top: 800px; left: 50px;">
+            <img id="i6" alt="Longreach Castle" class="banner" src="./img/map/6/banner.png" style="top: 800px; left: 1111px;">
+            <img id="i7" alt="Fortress of Frost" class="banner" src="./img/map/7/banner.png" style="top: 1120px; left: 374px;">
+            <img id="i8" alt="City of Judgement" class="banner" src="./img/map/8/banner.png" style="top: 1120px; left: 787px;">
+
+            <!-- FACTION STAGES -->
+            <img id="i9" alt="Stage 1" class="item gate" src="./img/map/0/gate.png" style="top: 77px; left: 500px;" onmouseout="hideTooltip()" onmouseover="showTooltip(9)" onclick="attack(9)">
+            <img id="i10" alt="Stage 2" class="item gate" src="./img/map/0/gate.png" style="top: 77px; left: 666px;" onmouseout="hideTooltip()" onmouseover="showTooltip(10)" onclick="attack(10)">
+            <img id="i11" alt="Stage 3" class="item gate" src="./img/map/0/gate.png" style="top: 514px; left: 1073px;" onmouseout="hideTooltip()" onmouseover="showTooltip(11)" onclick="attack(11)">
+            <img id="i12" alt="Stage 4" class="item gate" src="./img/map/0/gate.png" style="top: 667px; left: 1073px;" onmouseout="hideTooltip()" onmouseover="showTooltip(12)" onclick="attack(12)">
+            <img id="i13" alt="Stage 5" class="item gate" src="./img/map/0/gate.png" style="top: 1104px; left: 666px;" onmouseout="hideTooltip()" onmouseover="showTooltip(13)" onclick="attack(13)">
+            <img id="i14" alt="Stage 6" class="item gate" src="./img/map/0/gate.png" style="top: 1104px; left: 500px;" onmouseout="hideTooltip()" onmouseover="showTooltip(14)" onclick="attack(14)">
+            <img id="i15" alt="Stage 7" class="item gate" src="./img/map/0/gate.png" style="top: 667px; left: 93px;" onmouseout="hideTooltip()" onmouseover="showTooltip(15)" onclick="attack(15)">
+            <img id="i16" alt="Stage 8" class="item gate" src="./img/map/0/gate.png" style="top: 514px; left: 93px;" onmouseout="hideTooltip()" onmouseover="showTooltip(16)" onclick="attack(16)">
+            
+            <!-- MIDDLE STAGES -->
+            <img id="i17" alt="Stage 9" class="item gate" src="./img/map/0/gate.png" style="top: 187px; left: 583px;" onmouseout="hideTooltip()" onmouseover="showTooltip(17)" onclick="attack(17)">
+            <img id="i18" alt="Stage 10" class="item gate" src="./img/map/0/gate.png" style="top: 590px; left: 995px;" onmouseout="hideTooltip()" onmouseover="showTooltip(18)" onclick="attack(18)">
+            <img id="i19" alt="Stage 11" class="item gate" src="./img/map/0/gate.png" style="top: 994px; left: 583px;" onmouseout="hideTooltip()" onmouseover="showTooltip(19)" onclick="attack(19)">
+            <img id="i20" alt="Stage 12" class="item gate" src="./img/map/0/gate.png" style="top: 590px; left: 171px;" onmouseout="hideTooltip()" onmouseover="showTooltip(20)" onclick="attack(20)">
+            
+            <!-- STAGES -->
+            <img id="i21" alt="Stage 13" class="item gate" src="./img/map/0/gate.png" style="top: 184px; left: 410px;" onmouseout="hideTooltip()" onmouseover="showTooltip(21)" onclick="attack(21)">
+            <img id="i22" alt="Stage 14" class="item gate" src="./img/map/0/gate.png" style="top: 184px; left: 757px;" onmouseout="hideTooltip()" onmouseover="showTooltip(22)" onclick="attack(22)">
+            <img id="i23" alt="Stage 15" class="item gate" src="./img/map/0/gate.png" style="top: 417px; left: 992px;" onmouseout="hideTooltip()" onmouseover="showTooltip(23)" onclick="attack(23)">
+            <img id="i24" alt="Stage 16" class="item gate" src="./img/map/0/gate.png" style="top: 764px; left: 992px;" onmouseout="hideTooltip()" onmouseover="showTooltip(24)" onclick="attack(24)">
+            <img id="i25" alt="Stage 17" class="item gate" src="./img/map/0/gate.png" style="top: 997px; left: 757px;" onmouseout="hideTooltip()" onmouseover="showTooltip(25)" onclick="attack(25)">
+            <img id="i26" alt="Stage 18" class="item gate" src="./img/map/0/gate.png" style="top: 997px; left: 410px;" onmouseout="hideTooltip()" onmouseover="showTooltip(26)" onclick="attack(26)">
+            <img id="i27" alt="Stage 19" class="item gate" src="./img/map/0/gate.png" style="top: 764px; left: 175px;" onmouseout="hideTooltip()" onmouseover="showTooltip(27)" onclick="attack(27)">
+            <img id="i28" alt="Stage 20" class="item gate" src="./img/map/0/gate.png" style="top: 417px; left: 175px;" onmouseout="hideTooltip()" onmouseover="showTooltip(28)" onclick="attack(28)">
+            
+            <!-- TWIN DRAGON STAGES -->
+            <img id="i29" alt="Stage 21" class="item gate" src="./img/map/0/gate.png" style="top: 504px; left: 543px;" onmouseout="hideTooltip()" onmouseover="showTooltip(29)" onclick="attack(29)">
+            <img id="i30" alt="Stage 22" class="item gate" src="./img/map/0/gate.png" style="top: 504px; left: 623px;" onmouseout="hideTooltip()" onmouseover="showTooltip(30)" onclick="attack(30)">
+            <img id="i31" alt="Stage 23" class="item gate" src="./img/map/0/gate.png" style="top: 550px; left: 670px;" onmouseout="hideTooltip()" onmouseover="showTooltip(31)" onclick="attack(31)">
+            <img id="i32" alt="Stage 24" class="item gate" src="./img/map/0/gate.png" style="top: 631px; left: 670px;" onmouseout="hideTooltip()" onmouseover="showTooltip(32)" onclick="attack(32)">
+            <img id="i33" alt="Stage 25" class="item gate" src="./img/map/0/gate.png" style="top: 677px; left: 623px;" onmouseout="hideTooltip()" onmouseover="showTooltip(33)" onclick="attack(33)">
+            <img id="i34" alt="Stage 26" class="item gate" src="./img/map/0/gate.png" style="top: 677px; left: 543px;" onmouseout="hideTooltip()" onmouseover="showTooltip(34)" onclick="attack(34)">
+            <img id="i35" alt="Stage 27" class="item gate" src="./img/map/0/gate.png" style="top: 631px; left: 496px;" onmouseout="hideTooltip()" onmouseover="showTooltip(35)" onclick="attack(35)">
+            <img id="i36" alt="Stage 28" class="item gate" src="./img/map/0/gate.png" style="top: 550px; left: 496px;" onmouseout="hideTooltip()" onmouseover="showTooltip(36)" onclick="attack(36)">
+
+            <!-- OTHER STAGES -->
+            <img id="i37" alt="Stage 29" class="item gate" src="./img/map/0/gate.png" style="top: 222px; left: 295px;" onmouseout="hideTooltip()" onmouseover="showTooltip(37)" onclick="attack(37)">
+            <img id="i38" alt="Stage 30" class="item gate" src="./img/map/0/gate.png" style="top: 302px; left: 215px;" onmouseout="hideTooltip()" onmouseover="showTooltip(38)" onclick="attack(38)">
+            <img id="i39" alt="Stage 31" class="item gate" src="./img/map/0/gate.png" style="top: 879px; left: 953px;" onmouseout="hideTooltip()" onmouseover="showTooltip(39)" onclick="attack(39)">
+            <img id="i40" alt="Stage 32" class="item gate" src="./img/map/0/gate.png" style="top: 959px; left: 873px;" onmouseout="hideTooltip()" onmouseover="showTooltip(40)" onclick="attack(40)">
+            <img id="i41" alt="Stage 33" class="item gate" src="./img/map/0/gate.png" style="top: 959px; left: 293px;" onmouseout="hideTooltip()" onmouseover="showTooltip(41)" onclick="attack(41)">
+            <img id="i42" alt="Stage 34" class="item gate" src="./img/map/0/gate.png" style="top: 879px; left: 213px;" onmouseout="hideTooltip()" onmouseover="showTooltip(42)" onclick="attack(42)">
+            <img id="i43" alt="Stage 35" class="item gate" src="./img/map/0/gate.png" style="top: 300px; left: 952px;" onmouseout="hideTooltip()" onmouseover="showTooltip(43)" onclick="attack(43)">
+            <img id="i44" alt="Stage 36" class="item gate" src="./img/map/0/gate.png" style="top: 221px; left: 871px;" onmouseout="hideTooltip()" onmouseover="showTooltip(44)" onclick="attack(44)">
+
+            <!-- POTION CITIES -->
+            <img id="i45" alt="Potion City 1" class="item depot" src="./img/map/0/potion.png" style="top: 109px; left: 589px;" onmouseout="hideTooltip()" onmouseover="showTooltip(45)" onclick="attack(45)">
+            <img id="i46" alt="Potion City 2" class="item depot" src="./img/map/0/potion.png" style="top: 582px; left: 99px;" onmouseout="hideTooltip()" onmouseover="showTooltip(46)" onclick="attack(46)">
+            <img id="i47" alt="Potion City 3" class="item depot" src="./img/map/0/potion.png" style="top: 582px; left: 1079px;" onmouseout="hideTooltip()" onmouseover="showTooltip(47)" onclick="attack(47)">
+            <img id="i48" alt="Potion City 4" class="item depot" src="./img/map/0/potion.png" style="top: 1056px; left: 589px;" onmouseout="hideTooltip()" onmouseover="showTooltip(48)" onclick="attack(48)">
+            
+             <!-- RESOURCES CITIES -->
+            <img id="i49" alt="Resources City 1" class="item depot" src="./img/map/0/herb.png" style="top: 343px; left: 656px;" onmouseout="hideTooltip()" onmouseover="showTooltip(49)" onclick="attack(49)">
+            <img id="i50" alt="Resources City 2" class="item depot" src="./img/map/0/herb.png" style="top: 516px; left: 349px;" onmouseout="hideTooltip()" onmouseover="showTooltip(50)" onclick="attack(50)">
+            <img id="i51" alt="Resources City 3" class="item depot" src="./img/map/0/herb.png" style="top: 647px; left: 830px;" onmouseout="hideTooltip()" onmouseover="showTooltip(51)" onclick="attack(51)">
+            <img id="i52" alt="Resources City 4" class="item depot" src="./img/map/0/herb.png" style="top: 823px; left: 523px;" onmouseout="hideTooltip()" onmouseover="showTooltip(52)" onclick="attack(52)">
+
+            <!-- BLESSING CITIES -->
+            <img id="i53" alt="Blessing City 1" class="item caravan" src="./img/map/0/caravan.png" style="top: 43px; left: 550px;" onmouseout="hideTooltip()" onmouseover="showTooltip(53)" onclick="attack(53)">
+            <img id="i54" alt="Blessing City 2" class="item caravan" src="./img/map/0/caravan.png" style="top: 43px; left: 630px;" onmouseout="hideTooltip()" onmouseover="showTooltip(54)" onclick="attack(54)">
+            <img id="i55" alt="Blessing City 3" class="item caravan" src="./img/map/0/caravan.png" style="top: 343px; left: 523px;" onmouseout="hideTooltip()" onmouseover="showTooltip(55)" onclick="attack(55)">
+            <img id="i56" alt="Blessing City 4" class="item caravan" src="./img/map/0/caravan.png" style="top: 516px; left: 830px;" onmouseout="hideTooltip()" onmouseover="showTooltip(56)" onclick="attack(56)">
+            <img id="i57" alt="Blessing City 5" class="item caravan" src="./img/map/0/caravan.png" style="top: 543px; left: 33px;" onmouseout="hideTooltip()" onmouseover="showTooltip(57)" onclick="attack(57)">
+            <img id="i58" alt="Blessing City 6" class="item caravan" src="./img/map/0/caravan.png" style="top: 543px; left: 1147px;" onmouseout="hideTooltip()" onmouseover="showTooltip(58)" onclick="attack(58)">
+            <img id="i59" alt="Blessing City 7" class="item caravan" src="./img/map/0/caravan.png" style="top: 623px; left: 33px;" onmouseout="hideTooltip()" onmouseover="showTooltip(59)" onclick="attack(59)">
+            <img id="i60" alt="Blessing City 8" class="item caravan" src="./img/map/0/caravan.png" style="top: 623px; left: 1147px;" onmouseout="hideTooltip()" onmouseover="showTooltip(60)" onclick="attack(60)">
+            <img id="i61" alt="Blessing City 9" class="item caravan" src="./img/map/0/caravan.png" style="top: 647px; left: 349px;" onmouseout="hideTooltip()" onmouseover="showTooltip(61)" onclick="attack(61)">
+            <img id="i62" alt="Blessing City 10" class="item caravan" src="./img/map/0/caravan.png" style="top: 823px; left: 656px;" onmouseout="hideTooltip()" onmouseover="showTooltip(62)" onclick="attack(62)">
+            <img id="i63" alt="Blessing City 11" class="item caravan" src="./img/map/0/caravan.png" style="top: 1123px; left: 550px;" onmouseout="hideTooltip()" onmouseover="showTooltip(63)" onclick="attack(63)">
+            <img id="i64" alt="Blessing City 12" class="item caravan" src="./img/map/0/caravan.png" style="top: 1123px; left: 630px;" onmouseout="hideTooltip()" onmouseover="showTooltip(64)" onclick="attack(64)">
+
+            <!-- MILITARY CITIES -->
+            <img id="i65" alt="Military City 1" class="item mmilitary" src="./img/map/0/military.png" style="top: 251px; left: 590px;" onmouseout="hideTooltip()" onmouseover="showTooltip(65)" onclick="attack(65)">
+            <img id="i66" alt="Military City 2" class="item mmilitary" src="./img/map/0/military.png" style="top: 424px; left: 443px;" onmouseout="hideTooltip()" onmouseover="showTooltip(66)" onclick="attack(66)">
+            <img id="i67" alt="Military City 3" class="item mmilitary" src="./img/map/0/military.png" style="top: 424px; left: 736px;" onmouseout="hideTooltip()" onmouseover="showTooltip(67)" onclick="attack(67)">
+            <img id="i68" alt="Military City 4" class="item mmilitary" src="./img/map/0/military.png" style="top: 584px; left: 256px;" onmouseout="hideTooltip()" onmouseover="showTooltip(68)" onclick="attack(68)">
+            <img id="i69" alt="Military City 5" class="item mmilitary" src="./img/map/0/military.png" style="top: 584px; left: 923px;" onmouseout="hideTooltip()" onmouseover="showTooltip(69)" onclick="attack(69)">
+            <img id="i70" alt="Military City 6" class="item mmilitary" src="./img/map/0/military.png" style="top: 745px; left: 443px;" onmouseout="hideTooltip()" onmouseover="showTooltip(70)" onclick="attack(70)">
+            <img id="i71" alt="Military City 7" class="item mmilitary" src="./img/map/0/military.png" style="top: 745px; left: 736px;" onmouseout="hideTooltip()" onmouseover="showTooltip(71)" onclick="attack(71)">
+            <img id="i72" alt="Military City 8" class="item mmilitary" src="./img/map/0/military.png" style="top: 918px; left: 590px;" onmouseout="hideTooltip()" onmouseover="showTooltip(72)" onclick="attack(72)">
+
+            <!-- SMALL INDUSTRIAL CITIES -->
+            <img id="i73" alt="S. Industrial City 1" class="item smerchant" src="./img/map/0/merchant.png" style="top: 48px; left: 461px;" onmouseout="hideTooltip()" onmouseover="showTooltip(73)" onclick="attack(73)">
+            <img id="i74" alt="S. Industrial City 2" class="item smerchant" src="./img/map/0/merchant.png" style="top: 48px; left: 714px;" onmouseout="hideTooltip()" onmouseover="showTooltip(74)" onclick="attack(74)">
+            <img id="i75" alt="S. Industrial City 3" class="item smerchant" src="./img/map/0/merchant.png" style="top: 70px; left: 69px;" onmouseout="hideTooltip()" onmouseover="showTooltip(75)" onclick="attack(75)">
+            <img id="i76" alt="S. Industrial City 4" class="item smerchant" src="./img/map/0/merchant.png" style="top: 70px; left: 202px;" onmouseout="hideTooltip()" onmouseover="showTooltip(76)" onclick="attack(76)">
+            <img id="i77" alt="S. Industrial City 5" class="item smerchant" src="./img/map/0/merchant.png" style="top: 70px; left: 971px;" onmouseout="hideTooltip()" onmouseover="showTooltip(77)" onclick="attack(77)">
+            <img id="i78" alt="S. Industrial City 6" class="item smerchant" src="./img/map/0/merchant.png" style="top: 70px; left: 1104px;" onmouseout="hideTooltip()" onmouseover="showTooltip(78)" onclick="attack(78)">
+            <img id="i79" alt="S. Industrial City 7" class="item smerchant" src="./img/map/0/merchant.png" style="top: 164px; left: 242px;" onmouseout="hideTooltip()" onmouseover="showTooltip(79)" onclick="attack(79)">
+            <img id="i80" alt="S. Industrial City 8" class="item smerchant" src="./img/map/0/merchant.png" style="top: 164px; left: 931px;" onmouseout="hideTooltip()" onmouseover="showTooltip(80)" onclick="attack(80)">
+            <img id="i81" alt="S. Industrial City 9" class="item smerchant" src="./img/map/0/merchant.png" style="top: 203px; left: 69px;" onmouseout="hideTooltip()" onmouseover="showTooltip(81)" onclick="attack(81)">
+            <img id="i82" alt="S. Industrial City 10" class="item smerchant" src="./img/map/0/merchant.png" style="top: 203px; left: 1104px;" onmouseout="hideTooltip()" onmouseover="showTooltip(82)" onclick="attack(82)">
+            <img id="i83" alt="S. Industrial City 11" class="item smerchant" src="./img/map/0/merchant.png" style="top: 244px; left: 162px;" onmouseout="hideTooltip()" onmouseover="showTooltip(83)" onclick="attack(83)">
+            <img id="i84" alt="S. Industrial City 12" class="item smerchant" src="./img/map/0/merchant.png" style="top: 244px; left: 1011px;" onmouseout="hideTooltip()" onmouseover="showTooltip(84)" onclick="attack(84)">
+            <img id="i85" alt="S. Industrial City 13" class="item smerchant" src="./img/map/0/merchant.png" style="top: 475px; left: 57px;" onmouseout="hideTooltip()" onmouseover="showTooltip(85)" onclick="attack(85)">
+            <img id="i86" alt="S. Industrial City 14" class="item smerchant" src="./img/map/0/merchant.png" style="top: 475px; left: 1118px;" onmouseout="hideTooltip()" onmouseover="showTooltip(86)" onclick="attack(86)">
+            <img id="i87" alt="S. Industrial City 15" class="item smerchant" src="./img/map/0/merchant.png" style="top: 702px; left: 57px;" onmouseout="hideTooltip()" onmouseover="showTooltip(87)" onclick="attack(87)">
+            <img id="i88" alt="S. Industrial City 16" class="item smerchant" src="./img/map/0/merchant.png" style="top: 702px; left: 1118px;" onmouseout="hideTooltip()" onmouseover="showTooltip(88)" onclick="attack(88)">
+            <img id="i89" alt="S. Industrial City 17" class="item smerchant" src="./img/map/0/merchant.png" style="top: 932px; left: 163px;" onmouseout="hideTooltip()" onmouseover="showTooltip(89)" onclick="attack(89)">
+            <img id="i90" alt="S. Industrial City 18" class="item smerchant" src="./img/map/0/merchant.png" style="top: 932px; left: 1013px;" onmouseout="hideTooltip()" onmouseover="showTooltip(90)" onclick="attack(90)">
+            <img id="i91" alt="S. Industrial City 19" class="item smerchant" src="./img/map/0/merchant.png" style="top: 972px; left: 69px;" onmouseout="hideTooltip()" onmouseover="showTooltip(91)" onclick="attack(91)">
+            <img id="i92" alt="S. Industrial City 20" class="item smerchant" src="./img/map/0/merchant.png" style="top: 972px; left: 1106px;" onmouseout="hideTooltip()" onmouseover="showTooltip(92)" onclick="attack(92)">
+            <img id="i93" alt="S. Industrial City 21" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1012px; left: 243px;" onmouseout="hideTooltip()" onmouseover="showTooltip(93)" onclick="attack(93)">
+            <img id="i94" alt="S. Industrial City 22" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1012px; left: 933px;" onmouseout="hideTooltip()" onmouseover="showTooltip(94)" onclick="attack(94)">
+            <img id="i95" alt="S. Industrial City 23" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1105px; left: 69px;" onmouseout="hideTooltip()" onmouseover="showTooltip(95)" onclick="attack(95)">
+            <img id="i96" alt="S. Industrial City 24" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1105px; left: 203px;" onmouseout="hideTooltip()" onmouseover="showTooltip(96)" onclick="attack(96)">
+            <img id="i97" alt="S. Industrial City 25" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1105px; left: 973px;" onmouseout="hideTooltip()" onmouseover="showTooltip(97)" onclick="attack(97)">
+            <img id="i98" alt="S. Industrial City 26" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1105px; left: 1106px;" onmouseout="hideTooltip()" onmouseover="showTooltip(98)" onclick="attack(98)">
+            <img id="i99" alt="S. Industrial City 27" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1128px; left: 461px;" onmouseout="hideTooltip()" onmouseover="showTooltip(99)" onclick="attack(99)">
+            <img id="i100" alt="S. Industrial City 28" class="item smerchant" src="./img/map/0/merchant.png" style="top: 1128px; left: 714px;" onmouseout="hideTooltip()" onmouseover="showTooltip(100)" onclick="attack(100)">
+            
+            <!-- MEDIUM INDUSTRIAL CITIES -->
+            <img id="i101" alt="M. Industrial City 1" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 113px; left: 417px;" onmouseout="hideTooltip()" onmouseover="showTooltip(101)" onclick="attack(101)">
+            <img id="i102" alt="M. Industrial City 2" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 113px; left: 751px;" onmouseout="hideTooltip()" onmouseover="showTooltip(102)" onclick="attack(102)">
+            <img id="i103" alt="M. Industrial City 3" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 252px; left: 371px;" onmouseout="hideTooltip()" onmouseover="showTooltip(103)" onclick="attack(103)">
+            <img id="i104" alt="M. Industrial City 4" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 252px; left: 798px;" onmouseout="hideTooltip()" onmouseover="showTooltip(104)" onclick="attack(104)">
+            <img id="i105" alt="M. Industrial City 5" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 372px; left: 250px;" onmouseout="hideTooltip()" onmouseover="showTooltip(105)" onclick="attack(105)">
+            <img id="i106" alt="M. Industrial City 6" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 372px; left: 917px;" onmouseout="hideTooltip()" onmouseover="showTooltip(106)" onclick="attack(106)">
+            <img id="i107" alt="M. Industrial City 7" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 419px; left: 107px;" onmouseout="hideTooltip()" onmouseover="showTooltip(107)" onclick="attack(107)">
+            <img id="i108" alt="M. Industrial City 8" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 419px; left: 1061px;" onmouseout="hideTooltip()" onmouseover="showTooltip(108)" onclick="attack(108)">
+            <img id="i109" alt="M. Industrial City 9" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 753px; left: 107px;" onmouseout="hideTooltip()" onmouseover="showTooltip(109)" onclick="attack(109)">
+            <img id="i110" alt="M. Industrial City 10" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 753px; left: 1061px;" onmouseout="hideTooltip()" onmouseover="showTooltip(110)" onclick="attack(110)">
+            <img id="i111" alt="M. Industrial City 11" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 799px; left: 250px;" onmouseout="hideTooltip()" onmouseover="showTooltip(111)" onclick="attack(111)">
+            <img id="i112" alt="M. Industrial City 12" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 799px; left: 917px;" onmouseout="hideTooltip()" onmouseover="showTooltip(112)" onclick="attack(112)">
+            <img id="i113" alt="M. Industrial City 13" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 919px; left: 371px;" onmouseout="hideTooltip()" onmouseover="showTooltip(113)" onclick="attack(113)">
+            <img id="i114" alt="M. Industrial City 14" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 919px; left: 798px;" onmouseout="hideTooltip()" onmouseover="showTooltip(114)" onclick="attack(114)">
+            <img id="i115" alt="M. Industrial City 15" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 1059px; left: 417px;" onmouseout="hideTooltip()" onmouseover="showTooltip(115)" onclick="attack(115)">
+            <img id="i116" alt="M. Industrial City 16" class="item mmerchant" src="./img/map/0/merchant.png" style="top: 1059px; left: 751px;" onmouseout="hideTooltip()" onmouseover="showTooltip(116)" onclick="attack(116)">
+            
+            <!-- LARGE INDUSTRIAL CITIES -->
+            <img id="i117" alt="L. Industrial City 1" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 338px; left: 325px;" onmouseout="hideTooltip()" onmouseover="showTooltip(117)" onclick="attack(117)">
+            <img id="i118" alt="L. Industrial City 2" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 338px; left: 831px;" onmouseout="hideTooltip()" onmouseover="showTooltip(118)" onclick="attack(118)">
+            <img id="i119" alt="L. Industrial City 3" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 408px; left: 578px;" onmouseout="hideTooltip()" onmouseover="showTooltip(119)" onclick="attack(119)">
+            <img id="i120" alt="L. Industrial City 4" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 752px; left: 578px;" onmouseout="hideTooltip()" onmouseover="showTooltip(120)" onclick="attack(120)">
+            <img id="i121" alt="L. Industrial City 5" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 578px; left: 406px;" onmouseout="hideTooltip()" onmouseover="showTooltip(121)" onclick="attack(121)">
+            <img id="i122" alt="L. Industrial City 6" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 578px; left: 752px;" onmouseout="hideTooltip()" onmouseover="showTooltip(122)" onclick="attack(122)">
+            <img id="i123" alt="L. Industrial City 7" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 817px; left: 325px;" onmouseout="hideTooltip()" onmouseover="showTooltip(123)" onclick="attack(123)">
+            <img id="i124" alt="L. Industrial City 8" class="item lmerchant" src="./img/map/0/merchant.png" style="top: 817px; left: 831px;" onmouseout="hideTooltip()" onmouseover="showTooltip(124)" onclick="attack(124)">
+            
+        </div>
+        </div>
+        <div class="dataC">
+            <div id="bRandomMap2" class="myButton" style="position: absolute; top: 10px; left: 0px; width: 140px; height: 30px;" onclick="randomMap()">Random</div>
+            <div id="bResetMap2" class="myButton" style="position: absolute; top: 50px; left: 0px; width: 140px; height: 30px;" onclick="resetMap()">Reset</div>
+            <div id="bNamesMap2" class="myButton" style="position: absolute; top: 10px; right: 0px; width: 140px; height: 30px;" onclick="toggleMapNames()">Hide Names</div>
+            <div id="bKingshipMap2" class="myButton" style="position: absolute; top: 50px; right: 0px; width: 140px; height: 30px;" onclick="toggleMapKingship()">Show Kingship</div>
+            <div id="bVillagesMap2" class="myButton" style="position: absolute; top: 10px; right: 150px; width: 140px; height: 30px;" onclick="toggleMapVillages()">Show Villages</div>
+            <br>
+            <img src="./img/icon.png">
+            <br>
+            <span style="color: white; font-family: 'Open Sans', sans-serif; font-size: 16px;">[BoL] Aethia</span>
+            <br><br>
+            <span style="color: white; font-family: 'Open Sans', sans-serif; font-size: 13px;">No copyright infringement intended, some text descriptions and all images belong to their <a style="color: white;" href="https://got.gtarcade.com">rightful owners</a>.</span>
+            <br>
+        </div>
+        <br><br>
+    </body>
+</html>
