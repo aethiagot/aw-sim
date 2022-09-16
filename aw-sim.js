@@ -94,12 +94,12 @@ function toggleMapKingship() {
 
 function toggleMapVillages() {
     if (!show_villages) {
-        $("#bKingshipMap1").html("Hide Kingship");
-        $("#bKingshipMap2").html("Hide Kingship");
+        $("#bVillagesMap1").html("Hide Kingship");
+        $("#bVillagesMap2").html("Hide Kingship");
     }
     else {
-        $("#bKingshipMap1").html("Show Kingship");
-        $("#bKingshipMap2").html("Show Kingship");
+        $("#bVillagesMap1").html("Show Kingship");
+        $("#bVillagesMap2").html("Show Kingship");
         
     }
     show_villages = !show_villages;
@@ -227,4 +227,12 @@ function hideTooltip() {
     $("#tContainer").hide();
     $("#tData").hide();
     refreshCanvas();
+}
+
+function resetMap() {
+    
+}
+
+function randomMap() {
+    
 }
