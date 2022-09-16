@@ -94,12 +94,12 @@ function toggleMapKingship() {
 
 function toggleMapVillages() {
     if (!show_villages) {
-        $("#bVillagesMap1").html("Hide Kingship");
-        $("#bVillagesMap2").html("Hide Kingship");
+        $("#bVillagesMap1").html("Hide Villages");
+        $("#bVillagesMap2").html("Hide Villages");
     }
     else {
-        $("#bVillagesMap1").html("Show Kingship");
-        $("#bVillagesMap2").html("Show Kingship");
+        $("#bVillagesMap1").html("Show Villages");
+        $("#bVillagesMap2").html("Show Villages");
         
     }
     show_villages = !show_villages;
