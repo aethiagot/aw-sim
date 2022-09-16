@@ -1,5 +1,5 @@
 /*
-    All-Out War K265's simulator
+    All-Out War Brotherhood of Light's simulator
     Copyright (C) 2022  [BoL] Aethia
 
     This program is free software: you can redistribute it and/or modify
@@ -46,15 +46,28 @@ const kingship = [
     ];
 const colors = ["#F1F1F1","#ff6095","#ff9641","#88ff89","#d38cf1","#ff3830","#ffc952","#56ffd2","#b2f1ff"];
 const factions = ["Twin Dragon Faction", "Shadow Faction", "Lordsbane Faction", "Tempest Faction", "Ages Faction", "Scarlet Faction", "Longreach Faction", "Frost Faction", "Justice Faction"];
+const links = [[29,30,31,32,33,34,35,36],[73,101],[74,102],[85,107],[86,108],[87,109],[88,110],[99,115],[100,116],[53,73],[54,74],[47,58,86],[47,60,88],[64,100],[63,99],[46,59,87],[46,57,85],[45,65],[47,69],[48,72],[46,68],[101,103],[102,104],[106,108],[110,112],[114,116],[113,115],[109,111],[105,107],[0,119],[0,119],[0,122],[0,122],[0,120],[0,120],[0,121],[0,121],[79,103],[83,105],[90,112],[94,114],[93,113],[89,111],[84,106],[80,104],[17,53,54],[15,16,20,57,59],[11,12,18,58,60],[19,63,64],[65,67,119],[66,68,121],[69,71,122],[70,72,120],[9,45,54],[10,45,53],[65,66,119],[67,69,122],[16,46,59],[11,47,60],[15,46,57],[12,47,58],[68,70,121],[71,72,120],[14,48,64],[13,48,63],[17,49,55],[50,55,117],[49,56,118],[20,50,61],[18,51,56],[52,61,123],[51,62,124],[19,52,62],[1,9,101],[2,10,102],[76,81],[75,79],[78,80],[77,82],[37,76],[44,77],[75,83],[78,84],[38,81],[43,82],[3,16,107],[4,11,108],[5,15,109],[6,12,110],[42,91],[39,92],[89,95],[90,98],[41,96],[40,97],[91,96],[93,95],[94,98],[92,97],[7,14,115],[8,13,116],[1,21,73],[2,22,74],[21,37,117],[22,44,118],[28,38,117],[23,43,118],[3,28,85],[4,23,86],[5,27,87],[6,24,88],[27,42,123],[24,39,124],[26,41,123],[25,40,124],[7,26,99],[8,25,100],[66,103,105],[67,104,106],[29,30,49,55],[33,34,52,62],[35,36,50,61],[31,32,51,56],[70,111,113],[71,112,114]];
 
 var prev = [0,1,2,3,4,5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var map = [0,1,2,3,4,5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var score = [74200,0,0,0,0,0,0,0,0];
 var show_names = true;
 var show_kingship = false;
 var show_villages = false;
 var canvas;
 var ctx;
 
+var recruit = $(".recruit");
+var recruitIndex = -1;
+
+function showNextRecruit() {
+    ++recruitIndex;
+    recruit.eq(recruitIndex % recruit.length)
+        .fadeIn(2000)
+        .delay(2000)
+        .fadeOut(2000, showNextRecruit);
+}
+    
 function initialize() {
     
     window.addEventListener('contextmenu', function (e) { 
@@ -64,6 +77,9 @@ function initialize() {
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
     refreshCanvas();
+    recruit = $(".recruit");
+    recruitIndex = -1;
+    showNextRecruit();
 }
 
 function toggleMapNames() {
@@ -117,6 +133,41 @@ function refreshVillages() {
     }
 }
 
+function attack(id) {
+    map[id] = getNextColor(id);
+    refreshBuilding(id);
+    updateURL();
+    refreshCanvas();
+    showTooltip(id);
+}
+
+function refreshBuilding(id) {
+    var ele = $("#i" + id);
+    var src = ele.attr('src').split('');
+    src[10] = map[id]; //TODO: dymamic
+    src = src.join('');
+    ele.attr('src',src);
+}
+
+function getNextColor(id) {
+    var res = []
+    for(var i = 0; i < links[id].length; i++){
+        var color = map[links[id][i]];
+        if (color != map[id] && color > prev[id] && res.indexOf(color) == -1){
+            res.push(color);
+        }
+    }
+    res.sort();
+    if (res.length == 0) {
+        prev[id] = 0;
+        return 0;
+    }
+    else {
+        prev[id] = res[0];
+        return res[0];
+    }
+}
+
 function refreshCanvas() {
     ctx.clearRect(0,0,canvas.width,canvas.height);
     drawMapRegions();
@@ -151,8 +202,8 @@ function drawMainRegion(id, mod) {
     var h = ele.height();
     
     ctx.beginPath();
-    ctx.strokeStyle = colors[id];
-    ctx.fillStyle = hex2rgb(colors[id]);
+    ctx.strokeStyle = colors[map[id]];
+    ctx.fillStyle = hex2rgb(colors[map[id]]);
     
     ctx.lineWidth = 2;
     ctx.moveTo(pos.left + w/2, pos.top - mod);
@@ -230,9 +281,61 @@ function hideTooltip() {
 }
 
 function resetMap() {
-    
+    for(var i = 9; i < map.length; i++) {
+        map[i] = 0;
+        prev[i] = 0;
+        refreshBuilding(i);
+    }
+    map[0] = 0;
+    prev[0] = 0;
+    refreshBuilding(0);
+    score = [74200,0,0,0,0,0,0,0,0];
+    updateURL();
+    refreshCanvas();
 }
 
 function randomMap() {
-    
+    resetMap();
+    var conquered = [1,2,3,4,5,6,7,8];
+    var faction = 1;
+    var rnd;
+    var linksS = [[29,30,31,32,33,34,35,36],[73,101],[74,102],[85,107],[86,108],[87,109],[88,110],[99,115],[100,116],[53,73],[54,74],[47,58,86],[47,60,88],[64,100],[63,99],[46,59,87],[46,57,85],[45,65],[47,69],[48,72],[46,68],[101,103],[102,104],[106,108],[110,112],[114,116],[113,115],[109,111],[105,107],[0,119],[0,119],[0,122],[0,122],[0,120],[0,120],[0,121],[0,121],[79,103],[83,105],[90,112],[94,114],[93,113],[89,111],[84,106],[80,104],[17,53,54],[15,16,20,57,59],[11,12,18,58,60],[19,63,64],[65,67,119],[66,68,121],[69,71,122],[70,72,120],[9,45,54],[10,45,53],[65,66,119],[67,69,122],[16,46,59],[11,47,60],[15,46,57],[12,47,58],[68,70,121],[71,72,120],[14,48,64],[13,48,63],[17,49,55],[50,55,117],[49,56,118],[20,50,61],[18,51,56],[52,61,123],[51,62,124],[19,52,62],[1,9,101],[2,10,102],[76,81],[75,79],[78,80],[77,82],[37,76],[44,77],[75,83],[78,84],[38,81],[43,82],[3,16,107],[4,11,108],[5,15,109],[6,12,110],[42,91],[39,92],[89,95],[90,98],[41,96],[40,97],[91,96],[93,95],[94,98],[92,97],[7,14,115],[8,13,116],[1,21,73],[2,22,74],[21,37,117],[22,44,118],[28,38,117],[23,43,118],[3,28,85],[4,23,86],[5,27,87],[6,24,88],[27,42,123],[24,39,124],[26,41,123],[25,40,124],[7,26,99],[8,25,100],[66,103,105],[67,104,106],[29,30,49,55],[33,34,52,62],[35,36,50,61],[31,32,51,56],[70,111,113],[71,112,114]];
+    while(conquered.length < 125) {
+        faction = (Math.round(Math.random() * 100)%8) + 1;
+        rnd = Math.round(Math.random() * 100)%(linksS[faction].length);
+        var id = linksS[faction][rnd];
+        linksS[faction].splice(rnd,1);
+        if (map[id] == WHITE){
+            score[map[id]] -= kingship[id];
+            map[id] = getNextColor(id);
+            score[map[id]] += kingship[id];
+            refreshBuilding(id)
+            conquered.push(id);
+            (linksS[faction]).push(...linksS[id]);
+            linksS[id] = [];
+            //updateFactionsData();
+        }
+    }
+    refreshCanvas();
+}
+
+function updateURL() {
+    var url_export_m = getMapId();
+    var url = new URL(document.URL.toString());
+    var query_string = url.search;
+    var search_params = new URLSearchParams(query_string); 
+    search_params.set('m', url_export_m);
+    url.search = search_params.toString();
+    var new_url = url.toString();
+    if (history.pushState)
+        window.history.pushState("", "", new_url);
+    else
+        document.location.href = new_url;
+}
+
+function getMapId() {
+    var res = "";
+    for(var i = 0; i < map.length; i++)
+        res += map[i];
+    return res;
 }

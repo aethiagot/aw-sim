@@ -69,6 +69,19 @@ html {
     color: #FFCC33;
 }
 
+.recruit {
+    display: none;
+}
+
+#recruitment {
+    font-family: 'Marcellus SC', serif;
+    font-size: 25px;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: bold;
+    color: white;
+}
+
 .panel {
     position: relative;
     border-width: 2px;
@@ -76,7 +89,18 @@ html {
     width: 376px;
     max-width: 376px;
     min-width: 376px;
-    padding-bottom: 30px;
+}
+
+.dataS {
+    position: relative;
+    border: 0px solid white;
+    width: 1190px;
+    margin: 0 auto;
+    color: white;
+    font-family: 'Open Sans', sans-serif;
+    font-size: 16px;
+    text-align: left;
+    padding-left: 250px;
 }
 
 .dataM {
