@@ -166,22 +166,49 @@ function refreshBuilding(id) {
 }
 
 function getNextColor(id) {
-    var res = []
-    for(var i = 0; i < links[id].length; i++){
-        var color = map[links[id][i]];
-        if (color != map[id] && color > prev[id] && res.indexOf(color) == -1){
-            res.push(color);
+    switch(id) {
+        //Shadow
+        case 9: return (map[id] == 0 && map[73] != 0)?map[73]:0;
+        case 21: return (map[id] == 0 && map[101] != 0)?map[101]:0;
+        //Lordsbane
+        case 10: return (map[id] == 0 && map[74] != 0)?map[74]:0;
+        case 22: return (map[id] == 0 && map[102] != 0)?map[102]:0;
+        //Tempest
+        case 16: return (map[id] == 0 && map[85] != 0)?map[85]:0;
+        case 28: return (map[id] == 0 && map[107] != 0)?map[107]:0;
+        //Ages
+        case 11: return (map[id] == 0 && map[86] != 0)?map[86]:0;
+        case 23: return (map[id] == 0 && map[108] != 0)?map[108]:0;
+        //Scarlet
+        case 15: return (map[id] == 0 && map[87] != 0)?map[87]:0;
+        case 27: return (map[id] == 0 && map[109] != 0)?map[109]:0;
+        //Longreach
+        case 12: return (map[id] == 0 && map[88] != 0)?map[88]:0;
+        case 24: return (map[id] == 0 && map[110] != 0)?map[110]:0;
+        //Frost
+        case 14: return (map[id] == 0 && map[99] != 0)?map[99]:0;
+        case 26: return (map[id] == 0 && map[115] != 0)?map[115]:0;
+        //Justice
+        case 13: return (map[id] == 0 && map[100] != 0)?map[100]:0;
+        case 25: return (map[id] == 0 && map[116] != 0)?map[116]:0;
+        default:    
+            var res = []
+            for(var i = 0; i < links[id].length; i++){
+                var color = map[links[id][i]];
+                if (color != map[id] && color > prev[id] && res.indexOf(color) == -1){
+                    res.push(color);
+                }
+            }
+            res.sort();
+            if (res.length == 0) {
+                prev[id] = 0;
+                return 0;
+            }
+            else {
+                prev[id] = res[0];
+                return res[0];
+            }
         }
-    }
-    res.sort();
-    if (res.length == 0) {
-        prev[id] = 0;
-        return 0;
-    }
-    else {
-        prev[id] = res[0];
-        return res[0];
-    }
 }
 
 function refreshCanvas() {
@@ -280,7 +307,27 @@ function drawKingship(id) {
 }
 
 function showTooltip(id) {
-    var res = $("#i"+ id).attr("alt") + "<br>Kingship: " + kingship[id] + "/min<br>";
+    var res = "<hr><span style=\"color: red;\">";
+    switch (id) {
+        //Shadow
+        case 9: case 21: res +=  "Only " + factions[1] + " can declare war</span><br><hr>"; break;
+        //Lordsbane
+        case 10: case 22: res += "Only " + factions[2] + " can declare war</span><br>"; break;
+        //Tempest
+        case 16: case 28: res += "Only " + factions[3] + " can declare war</span><br>"; break;
+        //Ages
+        case 11: case 23: res += "Only " + factions[4] + " can declare war</span><br>"; break;
+        //Scarlet
+        case 15: case 27: res += "Only " + factions[5] + " can declare war</span><br>"; break;
+        //Longreach
+        case 12: case 24: res += "Only " + factions[6] + " can declare war</span><br>"; break;
+        //Frost
+        case 14: case 26: res += "Only " + factions[7] + " can declare war</span><br>"; break;
+        //Justice
+        case 13: case 25: res += "Only " + factions[8] + " can declare war</span><br>"; break;
+        default: res = "<hr>";
+    }
+    res += $("#i"+ id).attr("alt") + "<br>Kingship: <span style=\"color: yellow;\">" + kingship[id] + "</span>/min<br><hr>";
     $("#tData").html(res);
     $("#tContainer").show();
     $("#tData").show();
