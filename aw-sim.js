@@ -38,7 +38,7 @@ const kingship = [
     1,1,1,1,1,1,1,1, //Other Stages
     1,1,1,1, //Potion Cities
     30,30,30,30, //Resources Cities
-    1,1,30,30,1,1,1,1,30,30,1,1, //Blessing Cities
+    1,1,1,1,1,1,1,1,30,30,30,30, //Blessing Cities
     50,50,50,50,50,50,50,50, //Military Cities
     10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10, //Small Industrial Cities
     30,30,30,30,30,30,30,30,30,30,30,30,30,30,30,30, //Medium Industrial Cities
