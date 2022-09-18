@@ -140,11 +140,11 @@ function toggleMapVillages() {
 
 function refreshVillages() {
     if (show_villages) {
-        $("#map").attr("src","./img/map/map-villages.jpg");
+        $("#mapV").show();
         $("#warning_villages").show();
     }
     else {
-        $("#map").attr("src","./img/map/map.jpg");
+        $("#mapV").hide();
         $("#warning_villages").hide();
     }
 }
