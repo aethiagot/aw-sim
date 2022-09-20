@@ -221,6 +221,19 @@ html {
     width: 38px;
 }
 
+.materialContainer {
+    position: relative;
+    text-align: left;
+    padding-left: 20px;
+    margin-bottom: 7px;
+}
+
+.materialPic {
+    position: relative;
+    top: 5px;
+    height: 25px;
+}
+
 .myButton {
 	background: linear-gradient(#ffd966, #e69138);
     border-radius: 2px;

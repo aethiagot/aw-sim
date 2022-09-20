@@ -150,7 +150,9 @@ function refreshVillages() {
 }
 
 function attack(id) {
+    score[map[id]] -= kingship[id];
     map[id] = getNextColor(id);
+    score[map[id]] += kingship[id];
     refreshBuilding(id);
     updateURL();
     refreshCanvas();
@@ -160,7 +162,7 @@ function attack(id) {
 function refreshBuilding(id) {
     var ele = $("#i" + id);
     var src = ele.attr('src').split('');
-    src[10] = map[id]; //TODO: dymamic
+    src[10] = map[id];
     src = src.join('');
     ele.attr('src',src);
 }
@@ -227,8 +229,11 @@ function refreshCanvas() {
 }
 
 function drawMapRegions() {
-    for(var i = 0; i < 9; i++)
-        drawMainRegion(i, 18);
+    drawMainRegion(0, 48);
+    for(var i = 1; i < 9; i++)
+        drawMainRegion(i, 42);
+    //for(var i = 9; i < map.length; i++)
+    //    drawMainRegion(i, 30);
 }
 
 function hex2rgb(hex){
@@ -241,19 +246,19 @@ function hex2rgb(hex){
 function drawMainRegion(id, mod) {
     var ele = $("#i"+id);
     var pos = ele.position();
-    var w = ele.width();
-    var h = ele.height();
+    var left = pos.left + ele.width()/2;
+    var top = pos.top + ele.height()/2 - 4;
     
     ctx.beginPath();
     ctx.strokeStyle = colors[map[id]];
     ctx.fillStyle = hex2rgb(colors[map[id]]);
     
     ctx.lineWidth = 2;
-    ctx.moveTo(pos.left + w/2, pos.top - mod);
-    ctx.lineTo(pos.left + w + mod, pos.top + h/2);
-    ctx.lineTo(pos.left + w/2, pos.top + h + mod);
-    ctx.lineTo(pos.left - mod, pos.top + h/2);
-    ctx.lineTo(pos.left + w/2, pos.top - mod);
+    ctx.moveTo(left, top - mod);
+    ctx.lineTo(left + mod, top);
+    ctx.lineTo(left, top + mod);
+    ctx.lineTo(left - mod, top);
+    ctx.lineTo(left, top - mod);
     ctx.fill();
     ctx.stroke();
 }
@@ -308,6 +313,7 @@ function drawKingship(id) {
 
 function showTooltip(id) {
     var res = "<hr><span style=\"color: red;\">";
+    var kings = kingship[id];
     switch (id) {
         //Shadow
         case 9: case 21: res +=  "Only " + factions[1] + " can declare war</span><br><hr>"; break;
@@ -327,7 +333,37 @@ function showTooltip(id) {
         case 13: case 25: res += "Only " + factions[8] + " can declare war</span><br>"; break;
         default: res = "<hr>";
     }
-    res += $("#i"+ id).attr("alt") + "<br>Kingship: <span style=\"color: yellow;\">" + kingship[id] + "</span>/min<br><hr>";
+    if (id <= 8)
+        kings += score[id];
+    
+    res += $("#i"+ id).attr("alt") + "<br>Kingship: <span style=\"color: yellow;\">" + kings + "</span>/min<br><hr>";
+    if (id > 0 && id <= 8) { //Bases
+        res += "<div class=\"materialContainer\">" +
+                  "<img class=\"materialPic\" src=\"./img/rss/grain.png\">&nbsp;400 x 360.000/h<br>" + 
+                "</div>";
+    }
+    if (id >= 73 && id <= 100) { //Small Industrial
+        res += "<div class=\"materialContainer\">" +
+                  "<img class=\"materialPic\" src=\"./img/rss/obsidian.png\">&nbsp;20 x 28.800/h<br>" + 
+                  "<img class=\"materialPic\" src=\"./img/rss/silver.png\">&nbsp;30 x 46.800/h<br>" +
+                  "<img class=\"materialPic\" src=\"./img/rss/brass.png\">&nbsp;60 x 90.000/h<br>" +
+                "</div>";
+    }
+    else if (id >= 101 && id <= 116) { //Medium Industrial
+        res += "<div class=\"materialContainer\">" +
+                  "<img class=\"materialPic\" src=\"./img/rss/obsidian.png\">&nbsp;30 x 36.000/h<br>" + 
+                  "<img class=\"materialPic\" src=\"./img/rss/silver.png\">&nbsp;40 x 57.600/h<br>" +
+                  "<img class=\"materialPic\" src=\"./img/rss/brass.png\">&nbsp;100 x 118.800/h<br>" +
+                "</div>";
+    }
+    
+    else if (id >= 117 && id <= 124) { //Large Industrial
+        res += "<div class=\"materialContainer\">" +
+                  "<img class=\"materialPic\" src=\"./img/rss/obsidian.png\">&nbsp;40 x 50.400/h<br>" + 
+                  "<img class=\"materialPic\" src=\"./img/rss/silver.png\">&nbsp;80 x 82.800/h<br>" +
+                  "<img class=\"materialPic\" src=\"./img/rss/brass.png\">&nbsp;120 x 165.600/h<br>" +
+                "</div>";
+    }
     $("#tData").html(res);
     $("#tContainer").show();
     $("#tData").show();
