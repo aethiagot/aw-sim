@@ -48,6 +48,24 @@ const colors = ["#F1F1F1","#ff6095","#ff9641","#88ff89","#d38cf1","#ff3830","#ff
 const factions = ["Twin Dragon Faction", "Shadow Faction", "Lordsbane Faction", "Tempest Faction", "Ages Faction", "Scarlet Faction", "Longreach Faction", "Frost Faction", "Justice Faction"];
 const links = [[29,30,31,32,33,34,35,36],[73,101],[74,102],[85,107],[86,108],[87,109],[88,110],[99,115],[100,116],[53,73],[54,74],[47,56,86],[47,58,88],[60,100],[59,99],[46,57,87],[46,55,85],[45,65],[47,69],[48,72],[46,68],[101,103],[102,104],[106,108],[110,112],[114,116],[113,115],[109,111],[105,107],[0,119],[0,119],[0,122],[0,122],[0,120],[0,120],[0,121],[0,121],[79,103],[83,105],[90,112],[94,114],[93,113],[89,111],[84,106],[80,104],[17,53,54],[15,16,20,55,57],[11,12,18,58,58],[19,59,60],[65,67,119],[66,68,121],[69,71,122],[70,72,120],[9,45,54],[10,45,53],[16,46,57],[11,47,58],[15,46,55],[12,47,56],[14,48,60],[13,48,59],[65,66,119],[67,69,122],[68,70,121],[71,72,120],[17,49,61],[50,61,117],[49,62,118],[20,50,63],[18,51,62],[52,63,123],[51,64,124],[19,52,64],[1,9,101],[2,10,102],[76,81],[75,79],[78,80],[77,82],[37,76],[44,77],[75,83],[78,84],[38,81],[43,82],[3,16,107],[4,11,108],[5,15,109],[6,12,110],[42,91],[39,92],[89,95],[90,98],[41,96],[40,97],[91,96],[93,95],[94,98],[92,97],[7,14,115],[8,13,116],[1,21,73],[2,22,74],[21,37,117],[22,44,118],[28,38,117],[23,43,118],[3,28,85],[4,23,86],[5,27,87],[6,24,88],[27,42,123],[24,39,124],[26,41,123],[25,40,124],[7,26,99],[8,25,100],[66,103,105],[67,104,106],[29,30,49,61],[33,34,52,64],[35,36,50,63],[31,32,51,62],[70,111,113],[71,112,114]];
 
+const TOTAL_ATTACK = 0;
+const TOTAL_DEFENSE = 1;
+const TOTAL_HEALTH = 2;
+const HEALING_SPEED = 3;
+const GATHERING_SPEED = 4;
+
+const SMALL = 0;
+const MEDIUM = 1;
+const LARGE = 2;
+
+const OBSIDIAN = 0;
+const SILVER = 1;
+const BRASS = 2;
+
+const BLESSINGS = [[10, 10, 10], [0, 0, 0], [35, 35, 35],10, 20];
+const INDUSTRIAL_SLOTS = [[20, 30, 60], [30, 40, 100], [40, 80, 120]];
+const INDUSTRIAL_SPEED = [[28800, 46800, 90000], [36000, 57600, 118800], [50400, 82800, 165600]];
+
 var prev = [0,1,2,3,4,5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var map = [0,1,2,3,4,5,6,7,8,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 var score = [74200,0,0,0,0,0,0,0,0];
@@ -311,59 +329,187 @@ function drawKingship(id) {
     }
 }
 
+function getCitiesBuffs(id) {
+    if (id <= 0 || id > 8)
+        return "";
+    
+    var buffs = [0, 0, 0, 0, 0]; //TA, TD, TH, HS, GS
+    var rss = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]; //SMALL (OB/SI/BR), MEDIUM (OB/SI/BR), LARGE (OB/SI/BR)
+    
+    for(var i = 9; i < map.length; i++) {
+        if (map[i] == id) {
+            switch (true) {
+                case (i >= 45 && i <= 48): //Potion
+                    buffs[HEALING_SPEED] += BLESSINGS[HEALING_SPEED];
+                    break;
+        
+                case (i >= 49 && i <= 52): //Resources
+                    buffs[GATHERING_SPEED] += BLESSINGS[GATHERING_SPEED];
+                    break;
+        
+                case (i >= 53 && i <= 60): //Small Blessing
+                    buffs[TOTAL_ATTACK] += BLESSINGS[SMALL][TOTAL_ATTACK];
+                    buffs[TOTAL_DEFENSE] += BLESSINGS[SMALL][TOTAL_DEFENSE];
+                    buffs[TOTAL_HEALTH] += BLESSINGS[SMALL][TOTAL_HEALTH];
+                    break;
+                
+                case (i >= 61 && i <= 64): //Large Blessing
+                    buffs[TOTAL_ATTACK] += BLESSINGS[LARGE][TOTAL_ATTACK];
+                    buffs[TOTAL_DEFENSE] += BLESSINGS[LARGE][TOTAL_DEFENSE];
+                    buffs[TOTAL_HEALTH] += BLESSINGS[LARGE][TOTAL_HEALTH];
+                    break;
+                    
+                case (i >= 73 && i <= 100): //Small Industrial
+                    rss[SMALL][OBSIDIAN] += INDUSTRIAL_SLOTS[SMALL][OBSIDIAN];
+                    rss[SMALL][SILVER] += INDUSTRIAL_SLOTS[SMALL][SILVER];
+                    rss[SMALL][BRASS] += INDUSTRIAL_SLOTS[SMALL][BRASS];
+                    break;
+                
+                case (i >= 101 && i <= 116): //Medium Industrial
+                    rss[MEDIUM][OBSIDIAN] += INDUSTRIAL_SLOTS[MEDIUM][OBSIDIAN];
+                    rss[MEDIUM][SILVER] += INDUSTRIAL_SLOTS[MEDIUM][SILVER];
+                    rss[MEDIUM][BRASS] += INDUSTRIAL_SLOTS[MEDIUM][BRASS];
+                    break;
+                
+                case (i >= 117 && i <= 124): //Large Industrial
+                    rss[LARGE][OBSIDIAN] += INDUSTRIAL_SLOTS[LARGE][OBSIDIAN];
+                    rss[LARGE][SILVER] += INDUSTRIAL_SLOTS[LARGE][SILVER];
+                    rss[LARGE][BRASS] += INDUSTRIAL_SLOTS[LARGE][BRASS];
+                    break;        
+                }
+        }
+    }
+    
+    var res = "";
+    
+    if (rss[SMALL][OBSIDIAN] != 0) {
+        res += "<hr><div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/obsidian.png\">&nbsp;" + rss[SMALL][OBSIDIAN] + " x " + (INDUSTRIAL_SPEED[SMALL][OBSIDIAN]).toLocaleString() + "/h<br>" + 
+                    "<img class=\"materialPic\" src=\"./img/map/silver.png\">&nbsp;" + rss[SMALL][SILVER] + " x " + (INDUSTRIAL_SPEED[SMALL][OBSIDIAN]).toLocaleString() + "/h<br>" +
+                    "<img class=\"materialPic\" src=\"./img/map/brass.png\">&nbsp;" + rss[SMALL][BRASS] + " x " + (INDUSTRIAL_SPEED[SMALL][OBSIDIAN]).toLocaleString() + "/h<br>" +
+                "</div>";
+    }
+    if (rss[MEDIUM][OBSIDIAN] != 0) {
+        res += "<hr><div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/obsidian.png\">&nbsp;" + rss[MEDIUM][OBSIDIAN] + " x " + (INDUSTRIAL_SPEED[MEDIUM][OBSIDIAN]).toLocaleString() + "/h<br>" + 
+                    "<img class=\"materialPic\" src=\"./img/map/silver.png\">&nbsp;" + rss[MEDIUM][SILVER] + " x " + (INDUSTRIAL_SPEED[MEDIUM][OBSIDIAN]).toLocaleString() + "/h<br>" +
+                    "<img class=\"materialPic\" src=\"./img/map/brass.png\">&nbsp;" + rss[MEDIUM][BRASS] + " x " + (INDUSTRIAL_SPEED[MEDIUM][OBSIDIAN]).toLocaleString() + "/h<br>" +
+                "</div>";
+    }
+    if (rss[LARGE][OBSIDIAN] != 0) {
+        res += "<hr><div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/obsidian.png\">&nbsp;" + rss[LARGE][OBSIDIAN] + " x " + (INDUSTRIAL_SPEED[LARGE][OBSIDIAN]).toLocaleString() + "/h<br>" + 
+                    "<img class=\"materialPic\" src=\"./img/map/silver.png\">&nbsp;" + rss[LARGE][SILVER] + " x " + (INDUSTRIAL_SPEED[LARGE][OBSIDIAN]).toLocaleString() + "/h<br>" +
+                    "<img class=\"materialPic\" src=\"./img/map/brass.png\">&nbsp;" + rss[LARGE][BRASS] + " x " + (INDUSTRIAL_SPEED[LARGE][OBSIDIAN]).toLocaleString() + "/h<br>" +
+                "</div>";
+    }
+    if (buffs[TOTAL_ATTACK] != 0) 
+        res += "<hr><div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Total Attack:<br>Total Defense:<br>Total Health:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">&nbsp;+" + buffs[TOTAL_ATTACK] + "%<br>&nbsp;+" + buffs[TOTAL_DEFENSE] +"%<br>&nbsp;+" + buffs[TOTAL_HEALTH] +"%<br></div>" +
+                    "</div>";
+    if (buffs[HEALING_SPEED] != 0) 
+        res += "<hr><div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Healing Speed:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">&nbsp;+" + buffs[HEALING_SPEED] + "%<br></div>" +
+                    "</div>";
+    if (buffs[GATHERING_SPEED] != 0)
+        res += "<hr><div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Gathering Speed:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">&nbsp;+" + buffs[GATHERING_SPEED] + "%<br></div>" +
+                    "</div>";
+    return res;
+}
+
 function showTooltip(id) {
     var res = "<hr><span style=\"color: red;\">";
     var kings = kingship[id];
-    switch (id) {
+    switch (true) {
         //Shadow
-        case 9: case 21: res +=  "Only " + factions[1] + " can declare war</span><br><hr>"; break;
+        case (id == 9 || id == 21): res +=  "Only " + factions[1] + " can declare war</span><br><hr>"; break;
         //Lordsbane
-        case 10: case 22: res += "Only " + factions[2] + " can declare war</span><br>"; break;
+        case (id == 10 || id == 22): res += "Only " + factions[2] + " can declare war</span><br><hr>"; break;
         //Tempest
-        case 16: case 28: res += "Only " + factions[3] + " can declare war</span><br>"; break;
+        case (id == 16 || id == 28): res += "Only " + factions[3] + " can declare war</span><br><hr>"; break;
         //Ages
-        case 11: case 23: res += "Only " + factions[4] + " can declare war</span><br>"; break;
+        case (id == 11 || id == 23): res += "Only " + factions[4] + " can declare war</span><br><hr>"; break;
         //Scarlet
-        case 15: case 27: res += "Only " + factions[5] + " can declare war</span><br>"; break;
+        case (id == 15 || id == 27): res += "Only " + factions[5] + " can declare war</span><br><hr>"; break;
         //Longreach
-        case 12: case 24: res += "Only " + factions[6] + " can declare war</span><br>"; break;
+        case (id == 12 || id == 24): res += "Only " + factions[6] + " can declare war</span><br><hr>"; break;
         //Frost
-        case 14: case 26: res += "Only " + factions[7] + " can declare war</span><br>"; break;
+        case (id == 14 || id == 26): res += "Only " + factions[7] + " can declare war</span><br><hr>"; break;
         //Justice
-        case 13: case 25: res += "Only " + factions[8] + " can declare war</span><br>"; break;
+        case (id == 13 || id == 25): res += "Only " + factions[8] + " can declare war</span><br><hr>"; break;
+        //Military Cities
+        case (id >= 65 && id <= 72): res += "Troops can be deployed from this city</span><br><hr>"; break;
         default: res = "<hr>";
     }
     if (id <= 8)
         kings += score[id];
     
     res += $("#i"+ id).attr("alt") + "<br>Kingship: <span style=\"color: yellow;\">" + kings + "</span>/min<br><hr>";
-    if (id > 0 && id <= 8) { //Bases
-        res += "<div class=\"materialContainer\">" +
-                  "<img class=\"materialPic\" src=\"./img/rss/grain.png\">&nbsp;400 x 360.000/h<br>" + 
-                "</div>";
-    }
-    if (id >= 73 && id <= 100) { //Small Industrial
-        res += "<div class=\"materialContainer\">" +
-                  "<img class=\"materialPic\" src=\"./img/rss/obsidian.png\">&nbsp;20 x 28.800/h<br>" + 
-                  "<img class=\"materialPic\" src=\"./img/rss/silver.png\">&nbsp;30 x 46.800/h<br>" +
-                  "<img class=\"materialPic\" src=\"./img/rss/brass.png\">&nbsp;60 x 90.000/h<br>" +
-                "</div>";
-    }
-    else if (id >= 101 && id <= 116) { //Medium Industrial
-        res += "<div class=\"materialContainer\">" +
-                  "<img class=\"materialPic\" src=\"./img/rss/obsidian.png\">&nbsp;30 x 36.000/h<br>" + 
-                  "<img class=\"materialPic\" src=\"./img/rss/silver.png\">&nbsp;40 x 57.600/h<br>" +
-                  "<img class=\"materialPic\" src=\"./img/rss/brass.png\">&nbsp;100 x 118.800/h<br>" +
-                "</div>";
+    
+    switch (true) {
+        case (id > 0 && id <= 8): //Bases
+            res += "<div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/grain.png\">&nbsp;400 x " + (360000).toLocaleString() + "/h<br>" + 
+                    "</div>" + getCitiesBuffs(id);
+            break;
+        
+        case (id >= 45 && id <= 48): //Potion
+            res += "<div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Healing Speed:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">+" + BLESSINGS[HEALING_SPEED] + "%<br></div>" +
+                    "</div>";
+            break;
+
+        case (id >= 49 && id <= 52): //Resources
+            res += "<div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Gathering Speed:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">+" + BLESSINGS[GATHERING_SPEED] + "%<br></div>" +
+                    "</div>";
+            break;
+
+        case (id >= 53 && id <= 60): //Small Blessing
+            res += "<div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Total Attack:<br>Total Defense:<br>Total Health:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">+" + BLESSINGS[SMALL][TOTAL_ATTACK] +"%<br>+" + BLESSINGS[SMALL][TOTAL_DEFENSE] +"%<br>+" + BLESSINGS[SMALL][TOTAL_HEALTH] +"%<br></div>" +
+                    "</div>";
+            break;
+        
+        case (id >= 61 && id <= 64): //Large Blessing
+            res += "<div class=\"blessingContainer\">" +
+                        "<div style=\"width: 60%; float: left; text-align: right;\">Total Attack:<br>Total Defense:<br>Total Health:<br></div>" +
+                        "<div style=\"width: 36%; float: right; text-align: left;\">" + BLESSINGS[LARGE][TOTAL_ATTACK] +"%<br>+" + BLESSINGS[LARGE][TOTAL_DEFENSE] +"%<br>+" + BLESSINGS[LARGE][TOTAL_HEALTH] +"%<br></div>" +
+                    "</div>";
+            break;
+            
+        case (id >= 73 && id <= 100): //Small Industrial
+            res += "<div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/obsidian.png\">&nbsp;" + INDUSTRIAL_SLOTS[SMALL][OBSIDIAN] + " x " + (INDUSTRIAL_SPEED[SMALL][OBSIDIAN]).toLocaleString() + "/h<br>" + 
+                    "<img class=\"materialPic\" src=\"./img/map/silver.png\">&nbsp;" + INDUSTRIAL_SLOTS[SMALL][SILVER] + " x " + (INDUSTRIAL_SPEED[SMALL][SILVER]).toLocaleString() + "/h<br>" +
+                    "<img class=\"materialPic\" src=\"./img/map/brass.png\">&nbsp;" + INDUSTRIAL_SLOTS[SMALL][BRASS] + " x " + (INDUSTRIAL_SPEED[SMALL][BRASS]).toLocaleString() + "/h<br>" +
+                    "</div>";
+            break;
+        
+        case (id >= 101 && id <= 116): //Medium Industrial
+            res += "<div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/obsidian.png\">&nbsp;" + INDUSTRIAL_SLOTS[MEDIUM][OBSIDIAN] + " x " + (INDUSTRIAL_SPEED[MEDIUM][OBSIDIAN]).toLocaleString() + "/h<br>" + 
+                    "<img class=\"materialPic\" src=\"./img/map/silver.png\">&nbsp;" + INDUSTRIAL_SLOTS[MEDIUM][SILVER] + " x " + (INDUSTRIAL_SPEED[MEDIUM][SILVER]).toLocaleString() + "/h<br>" +
+                    "<img class=\"materialPic\" src=\"./img/map/brass.png\">&nbsp;" + INDUSTRIAL_SLOTS[MEDIUM][BRASS] + " x " + (INDUSTRIAL_SPEED[MEDIUM][BRASS]).toLocaleString() + "/h<br>" +
+                    "</div>";
+            break;
+        
+        case (id >= 117 && id <= 124): //Large Industrial
+            res += "<div class=\"materialContainer\">" +
+                    "<img class=\"materialPic\" src=\"./img/map/obsidian.png\">&nbsp;" + INDUSTRIAL_SLOTS[LARGE][OBSIDIAN] + " x " + (INDUSTRIAL_SPEED[LARGE][OBSIDIAN]).toLocaleString() + "/h<br>" + 
+                    "<img class=\"materialPic\" src=\"./img/map/silver.png\">&nbsp;" + INDUSTRIAL_SLOTS[LARGE][SILVER] + " x " + (INDUSTRIAL_SPEED[LARGE][SILVER]).toLocaleString() + "/h<br>" +
+                    "<img class=\"materialPic\" src=\"./img/map/brass.png\">&nbsp;" + INDUSTRIAL_SLOTS[LARGE][BRASS] + " x " + (INDUSTRIAL_SPEED[LARGE][BRASS]).toLocaleString() + "/h<br>" +
+                    "</div>";
+            break;        
     }
     
-    else if (id >= 117 && id <= 124) { //Large Industrial
-        res += "<div class=\"materialContainer\">" +
-                  "<img class=\"materialPic\" src=\"./img/rss/obsidian.png\">&nbsp;40 x 50.400/h<br>" + 
-                  "<img class=\"materialPic\" src=\"./img/rss/silver.png\">&nbsp;80 x 82.800/h<br>" +
-                  "<img class=\"materialPic\" src=\"./img/rss/brass.png\">&nbsp;120 x 165.600/h<br>" +
-                "</div>";
-    }
     $("#tData").html(res);
     $("#tContainer").show();
     $("#tData").show();

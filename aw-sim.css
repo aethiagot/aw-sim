@@ -221,11 +221,21 @@ html {
     width: 38px;
 }
 
+.blessingContainer {
+    position: relative;
+    text-align: center;
+    padding-left: 20px;
+    margin-top: -3px;
+    padding: 5px;
+    line-height: 23px;
+}
+
 .materialContainer {
     position: relative;
     text-align: left;
     padding-left: 20px;
-    margin-bottom: 7px;
+    margin-top: -6px;
+    margin-bottom: 6px;
 }
 
 .materialPic {
