@@ -159,7 +159,6 @@ html {
     position: absolute;
     max-width: 100%;
     max-height: 100%;
-    z-index: -5;
     display: none;
 }
 
@@ -307,4 +306,14 @@ html {
     font-size: 12px;
     margin-top: -70px;
     margin-left: -50px;
+}
+
+.img-magnifier-glass {
+  position: absolute;
+  border: 3px solid #000;
+  border-radius: 50%;
+  cursor: none;
+  /*Set the size of the magnifier glass:*/
+  width: 100px;
+  height: 100px;
 }
