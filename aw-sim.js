@@ -303,10 +303,7 @@ function drawMapVillages() {
             case (i >= 45 && i <= 124): //Rest of main buildings
                 mod = 38; 
                 break;
-            case (i == 760 || i == 761 || i == 1120 || i == 1121): //Devs fucking around villages (part 1)
-                mod = 18;
-                break;
-            case (i == 523 || i >= 1756): //Devs fucking around villages (part 2)
+            case (i == 523 || i >= 1756): //Devs fucking around villages
                 mod = 24; 
                 break;
             default: mod = 11; //Rest of villages
