@@ -291,7 +291,10 @@ function drawMapVillages() {
             case (i >= 9 && i <= 20): //Stages 1 to 12 (except for previous case)
                 mod = 28; 
                 break;
-            case (i >= 21 && i <= 28): //Stages 13 to 17
+            case (i == 21 || i == 22 || i == 25 || i == 26): //Stages 13, 14, 17, 18
+                mod = 18;
+                break;
+            case (i >= 23 && i <= 28): //Stages 15 to 20 (except for previous case)
                 mod = 20;
                 break;
             case (i >= 29 && i <= 36): //Stages 21 to 28
