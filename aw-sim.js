@@ -93,6 +93,22 @@ function initialize() {
         e.preventDefault(); 
     }, false);
     
+    $(document).keydown(function(e){
+        var key = e.keyCode;
+        switch(key) {
+            case 75: // K - Kingship
+                toggleMapKingship();
+                return true;
+            case 78: // N - Names
+                toggleMapNames();
+                return true;
+            case 86: // V - Villages
+                toggleMapVillages();
+                return true;
+            default:
+        }
+	});
+
     canvas = document.getElementById("myCanvas");
     ctx = canvas.getContext("2d");
     refreshCanvas();
